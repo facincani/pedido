@@ -1,10 +1,13 @@
 package com.example.pedido.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class Pedido {
 
     private String cliente;
+    @JsonProperty("uf")
     private String uf;
     private List<Item> itens;
 

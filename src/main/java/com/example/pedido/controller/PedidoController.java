@@ -2,39 +2,34 @@ package com.example.pedido.controller;
 
 import com.example.pedido.domain.Comprovante;
 import com.example.pedido.domain.Pedido;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import com.example.pedido.entity.PedidoEntity;
+import com.example.pedido.service.PedidoService;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 @RestController
+@CrossOrigin(origins = "*")
 public class PedidoController {
 
-    List<Pedido> pedidos = new ArrayList<>();
+    PedidoService service;
+
+    public PedidoController(PedidoService service) {
+        this.service = service;
+    }
+
 
     @PostMapping
     public Comprovante criaPedido(@RequestBody Pedido pedido){
-        pedidos.add(pedido);
-        return calcularImposto(pedido);
+        return service.criaPedido(pedido);
     }
 
-    private Comprovante calcularImposto(Pedido pedido) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Pedido> req = new HttpEntity<>(pedido, headers);
-        String url = "http://localhost:8081";
-        ResponseEntity<Comprovante> resp = restTemplate.postForEntity(url, req, Comprovante.class);
-
-        return resp.getBody();
+    @GetMapping
+    public List<PedidoEntity> consultaPedidos(){
+        return service.consultaPorEstado("SP");
     }
+
+
 
 }
